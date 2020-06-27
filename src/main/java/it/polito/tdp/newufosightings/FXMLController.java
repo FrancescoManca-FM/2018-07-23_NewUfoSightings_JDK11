@@ -1,9 +1,13 @@
 package it.polito.tdp.newufosightings;
 
 import java.net.URL;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import it.polito.tdp.newufosightings.model.Model;
+import it.polito.tdp.newufosightings.model.State;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -33,7 +37,7 @@ public class FXMLController {
     private Button btnSelezionaAnno;
 
     @FXML
-    private ComboBox<?> cmbBoxForma;
+    private ComboBox<String> cmbBoxForma;
 
     @FXML
     private Button btnCreaGrafo;
@@ -50,16 +54,71 @@ public class FXMLController {
     @FXML
     void doCreaGrafo(ActionEvent event) {
 
+    	txtResult.clear();
+    	int anno = 0;
+    	String shape = this.cmbBoxForma.getValue();
+    	try {
+    		anno = Integer.parseInt(txtAnno.getText());
+    		
+    	}catch(NumberFormatException nfe) {
+    		nfe.printStackTrace();
+    		txtResult.appendText("Puoi inserire solo un numero intero per l'anno");
+    		return;
+    	}
+    	if(shape==null) {
+    		txtResult.appendText("Devi selezionare una shape");
+    		return;
+    	}
+    	this.model.creaGrafo(anno, shape);
+    	txtResult.appendText("GRAFO CREATO CON SUCCESSO!\nNUMERO VERTICI: "+this.model.getVerticiSize()+"\nNUMERO ARCHI: "+this.model.getArchiSize()+"\n");
+    	txtResult.appendText("ELENCO STATI CON PESI TOTALI  DEI VICINI :\n");
+    	
+    	for(State s : this.model.setPesoTotale()) {
+    		txtResult.appendText(s.toString()+"  ---  "+s.getTotalePesi()+"\n");
+    	}
     }
 
     @FXML
     void doSelezionaAnno(ActionEvent event) {
 
+    	txtResult.clear();
+    	int anno = 0;
+    	try {
+    		anno = Integer.parseInt(txtAnno.getText());
+    		
+    	}catch(NumberFormatException nfe) {
+    		nfe.printStackTrace();
+    		txtResult.appendText("Puoi inserire solo un numero intero per l'anno");
+    		return;
+    	}
+    	List<String> shapes = this.model.getShapeAnno(anno);
+    	Collections.sort(shapes);
+    	this.cmbBoxForma.getItems().addAll(shapes);
     }
 
     @FXML
     void doSimula(ActionEvent event) {
-
+    	txtResult.clear();
+    	int anno = 0;
+    	String shape = this.cmbBoxForma.getValue();
+    	try {
+    		anno = Integer.parseInt(txtAnno.getText());
+    		
+    	}catch(NumberFormatException nfe) {
+    		nfe.printStackTrace();
+    		txtResult.appendText("Puoi inserire solo un numero intero per l'anno");
+    		return;
+    	}
+    	if(shape==null) {
+    		txtResult.appendText("Devi selezionare una shape");
+    		return;
+    	}
+    	this.model.init(Integer.parseInt(this.txtT1.getText()), Integer.parseInt(this.txtAlfa.getText()), anno, shape);
+    	this.model.run();
+    	Map<State, Double> ris = this.model.getMappa();
+        for (Map.Entry<State, Double> entry : ris.entrySet()) {
+            System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue()+"\n");
+        }
     }
 
     @FXML

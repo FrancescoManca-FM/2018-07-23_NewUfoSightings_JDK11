@@ -1,6 +1,7 @@
 package it.polito.tdp.newufosightings.model;
 
 public class State {
+	
 	private String id;
 	private String name;
 	private String capital;
@@ -9,6 +10,8 @@ public class State {
 	private int area;
 	private int population;
 	private String neighbors;
+	private int totalePesi;
+	private double DEFCON;
 
 	public State(String id, String name, String capital, Double lat, Double lng, int area, int population,
 			String neighbors) {
@@ -21,6 +24,24 @@ public class State {
 		this.area = area;
 		this.population = population;
 		this.neighbors = neighbors;
+		this.totalePesi = 0;
+		this.DEFCON = 5.0;
+	}
+
+	public double getDEFCON() {
+		return DEFCON;
+	}
+
+	public void setDEFCON(double dEFCON) {
+		DEFCON = dEFCON;
+	}
+
+	public int getTotalePesi() {
+		return totalePesi;
+	}
+
+	public void setTotalePesi(int totalePesi) {
+		this.totalePesi = totalePesi;
 	}
 
 	public String getId() {
